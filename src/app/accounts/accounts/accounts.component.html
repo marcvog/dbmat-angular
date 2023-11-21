@@ -1,0 +1,90 @@
+<div style="text-align:center">
+  <h1>Accounts</h1>
+</div>
+<h2>Here are the accounts: </h2>
+
+<mat-form-field>
+  <mat-label>Filter</mat-label>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ami" #input>
+</mat-form-field>
+
+<table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" class="mat-elevation-z8">
+  <ng-container matColumnDef="DBMACC_ID">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by DBMACC_ID"> DBMACC_ID </th>
+    <td mat-cell *matCellDef="let account"> {{account.DBMACC_ID}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="GLOBAL_NAME">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by GLOBAL_NAME"> GLOBAL </th>
+    <td mat-cell *matCellDef="let account"> {{account.GLOBAL_NAME}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="USERNAME">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by USERNAME"> USERNAME </th>
+    <td mat-cell *matCellDef="let account"> {{account.USERNAME}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="ACCOUNT_STATUS">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by ACCOUNT_STATUS"> STATUS </th>
+    <td mat-cell *matCellDef="let account"> {{account.ACCOUNT_STATUS}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="CREATED">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by CREATED"> CREATED </th>
+    <td mat-cell *matCellDef="let account"> {{account.CREATED}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="LOCK_DATE">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by LOCK_DATE"> LOCK </th>
+    <td mat-cell *matCellDef="let account"> {{account.LOCK_DATE}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="EXPIRY_DATE">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by EXPIRY_DATE"> EXPIRY </th>
+    <td mat-cell *matCellDef="let account"> {{account.EXPIRY_DATE}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="PASSWORD_CHANGE_DATE">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by PASSWORD_CHANGE_DATE"> PASSWORD_CHANGE </th>
+    <td mat-cell *matCellDef="let account"> {{account.PASSWORD_CHANGE_DATE}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="LAST_LOGIN_DATE">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by LAST_LOGIN_DATE"> LAST_LOGIN </th>
+    <td mat-cell *matCellDef="let account"> {{account.LAST_LOGIN_DATE}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="PASSWORD_VERSIONS">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by PASSWORD_VERSIONS"> PASSWORD_VERSIONS </th>
+    <td mat-cell *matCellDef="let account"> {{account.PASSWORD_VERSIONS}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="COUNT_TABLES">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by COUNT_TABLES"> TABLES </th>
+    <td mat-cell *matCellDef="let account"> {{account.COUNT_TABLES}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="DBMACC_USER_PREFIX">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by DBMACC_USER_PREFIX"> DBMACC_USER_PREFIX </th>
+    <td mat-cell *matCellDef="let account"> {{account.DBMACC_USER_PREFIX}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="DBMACC_INS_DATE">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by DBMACC_INS_DATE"> DBMACC_INS </th>
+    <td mat-cell *matCellDef="let account"> {{account.DBMACC_INS_DATE}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="DBMACC_UPD_DATE">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by DBMACC_UPD_DATE"> DBMACC_UPD </th>
+    <td mat-cell *matCellDef="let account"> {{account.DBMACC_UPD_DATE}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="DBMDG_ID">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by DBMDG_ID"> DBMDG_ID </th>
+    <td mat-cell *matCellDef="let account"> {{account.DBMDG_ID}} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+</table>

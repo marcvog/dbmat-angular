@@ -1,0 +1,144 @@
+<h2>Manage developer groups here</h2>
+
+<div>Enable/Disable Dry-Run:</div>
+<p>
+  <label *ngFor="let option of options">
+    <input type="radio" name="toggle1" [(ngModel)]="dryrun" [value]="option.value">{{option.action}}
+  </label>
+</p>
+<div>Search by:</div>
+<p>
+  <label *ngFor="let item of items">
+    <input type="radio" name="toggle2" [(ngModel)]="workflow" [value]="item.value">{{item.action}}
+  </label>
+</p>
+
+<ng-template [ngIf]="workflow=='group'">
+<div>Choose a developer group</div>
+<select [(ngModel)]="group_id" (ngModelChange)="getDevelopers()">
+  <ng-container *ngFor="let group of allGroupsList">
+    <option [ngValue]="group.DBMDG_ID">{{group.DBMDG_GROUP_NAME}}</option>
+  </ng-container>
+</select>
+</ng-template>
+
+<ng-template [ngIf]="workflow=='developer'">
+<div>Choose a developer</div>
+<select [(ngModel)]="developer_id" (ngModelChange)="getGroups()">
+  <ng-container *ngFor="let developer of contactsList">
+    <option [ngValue]="developer.DBMDEV_ID">{{developer.CONTACT}}</option>
+  </ng-container>
+</select>
+</ng-template>
+
+<ng-template [ngIf]="table=='developers'">
+<table mat-table [dataSource]="dataSource_dev" class="mat-elevation-z8">
+  <!-- Checkbox Column -->
+  <ng-container matColumnDef="select">
+    <th mat-header-cell *matHeaderCellDef>
+      <mat-checkbox (change)="$event ? toggleAllDevRows() : null"
+                    [checked]="selection_dev.hasValue() && isAllDevSelected()"
+                    [indeterminate]="selection_dev.hasValue() && !isAllDevSelected()"
+                    [aria-label]="checkboxLabelDev()">
+      </mat-checkbox>
+    </th>
+    <td mat-cell *matCellDef="let row">
+      <mat-checkbox (click)="$event.stopPropagation()"
+                    (change)="$event ? selection_dev.toggle(row) : null"
+                    [checked]="selection_dev.isSelected(row)"
+                    [aria-label]="checkboxLabelDev(row)">
+      </mat-checkbox>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="DBMDEV_ID">
+    <th mat-header-cell *matHeaderCellDef> DBMDEV_ID </th>
+    <td mat-cell *matCellDef="let developer"> {{developer.DBMDEV_ID}} </td>
+  </ng-container>
+  <ng-container matColumnDef="CONTACT">
+    <th mat-header-cell *matHeaderCellDef> CONTACT </th>
+    <td mat-cell *matCellDef="let developer"> {{developer.CONTACT}} </td>
+  </ng-container>
+  <ng-container matColumnDef="DBMDEV_INS_DATE">
+    <th mat-header-cell *matHeaderCellDef> DBMDEV_INS_DATE </th>
+    <td mat-cell *matCellDef="let developer"> {{developer.DBMDEV_INS_DATE}} </td>
+  </ng-container>
+  <ng-container matColumnDef="DBMDEV_UPD_DATE">
+    <th mat-header-cell *matHeaderCellDef> DBMDEV_UPD_DATE </th>
+    <td mat-cell *matCellDef="let developer"> {{developer.DBMDEV_UPD_DATE}} </td>
+  </ng-container>
+  <ng-container matColumnDef="CONTACT_NAME">
+    <th mat-header-cell *matHeaderCellDef> CONTACT_NAME </th>
+    <td mat-cell *matCellDef="let developer"> {{developer.CONTACT_NAME}} </td>
+  </ng-container>
+  <ng-container matColumnDef="CONTACT_EMAIL">
+    <th mat-header-cell *matHeaderCellDef> CONTACT_EMAIL </th>
+    <td mat-cell *matCellDef="let developer"> {{developer.CONTACT_EMAIL}} </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns_dev"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns_dev;"
+      (click)="selection_dev.toggle(row)"></tr>
+</table>
+</ng-template>
+
+<ng-template [ngIf]="table=='groups'">
+<table mat-table [dataSource]="dataSource_grp" class="mat-elevation-z8"> 
+
+  <!-- Checkbox Column -->
+  <ng-container matColumnDef="select">
+    <th mat-header-cell *matHeaderCellDef>
+      <mat-checkbox (change)="$event ? toggleAllGrpRows() : null"
+                    [checked]="selection_grp.hasValue() && isAllGrpSelected()"
+                    [indeterminate]="selection_grp.hasValue() && !isAllGrpSelected()"
+                    [aria-label]="checkboxLabelGrp()">
+      </mat-checkbox>
+    </th>
+    <td mat-cell *matCellDef="let row">
+      <mat-checkbox (click)="$event.stopPropagation()"
+                    (change)="$event ? selection_grp.toggle(row) : null"
+                    [checked]="selection_grp.isSelected(row)"
+                    [aria-label]="checkboxLabelGrp(row)">
+      </mat-checkbox>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="DBMDG_ID">
+    <th mat-header-cell *matHeaderCellDef> DBMDG_ID </th>
+    <td mat-cell *matCellDef="let group"> {{group.DBMDG_ID}} </td>
+  </ng-container>
+  <ng-container matColumnDef="DBMDG_GROUP_NAME">
+    <th mat-header-cell *matHeaderCellDef> DBMDG_GROUP_NAME </th>
+    <td mat-cell *matCellDef="let group"> {{group.DBMDG_GROUP_NAME}} </td>
+  </ng-container>
+  <ng-container matColumnDef="DBMDG_GROUP_DESC">
+    <th mat-header-cell *matHeaderCellDef> DBMDG_GROUP_DESC </th>
+    <td mat-cell *matCellDef="let group"> {{group.DBMDG_GROUP_DESC}} </td>
+  </ng-container>
+  <ng-container matColumnDef="DBMDG_INS_DATE">
+    <th mat-header-cell *matHeaderCellDef> DBMDG_INS_DATE </th>
+    <td mat-cell *matCellDef="let group"> {{group.DBMDG_INS_DATE}} </td>
+  </ng-container>
+  <ng-container matColumnDef="DBMDG_UPD_DATE">
+    <th mat-header-cell *matHeaderCellDef> DBMDG_UPD_DATE </th>
+    <td mat-cell *matCellDef="let group"> {{group.DBMDG_UPD_DATE}} </td>
+  </ng-container>
+  <ng-container matColumnDef="DBMDEV_ID">
+    <th mat-header-cell *matHeaderCellDef> DBMDEV_ID </th>
+    <td mat-cell *matCellDef="let group"> {{group.DBMDEV_ID}} </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns_grp"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns_grp;"
+      (click)="selection_grp.toggle(row)"></tr>
+</table>
+</ng-template>
+
+<ng-template [ngIf]="table=='developers'">
+<li *ngFor="let item of selection_dev.selected">
+  {{item.DBMDEV_ID}}
+</li>
+</ng-template>
+
+<ng-template [ngIf]="table=='groups'">
+<li *ngFor="let item of selection_grp.selected">
+  {{item.DBMDG_ID}}
+</li>
+</ng-template>
+

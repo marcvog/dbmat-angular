@@ -1,0 +1,45 @@
+<div style="text-align:center">
+  <h1>Developer Groups</h1>
+</div>
+
+<mat-form-field>
+  <mat-label>Filter</mat-label>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Ex. trigger" #input>
+</mat-form-field>
+
+<h2>Here are the developer groups: </h2>
+
+<table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" class="mat-elevation-z8">
+  <ng-container matColumnDef="DBMDG_ID">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by DBMDG_ID"> DBMDG_ID </th>
+    <td mat-cell *matCellDef="let group"> {{group.DBMDG_ID}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="DBMDG_GROUP_NAME">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by DBMDG_GROUP_NAME"> DBMDG_GROUP_NAME </th>
+    <td mat-cell *matCellDef="let group"> {{group.DBMDG_GROUP_NAME}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="DBMDG_GROUP_DESC">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by DBMDG_GROUP_DESC"> DBMDG_GROUP_DESC </th>
+    <td mat-cell *matCellDef="let group"> {{group.DBMDG_GROUP_DESC}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="DBMDG_INS_DATE">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by DBMDG_INS_DATE"> DBMDG_INS_DATE </th>
+    <td mat-cell *matCellDef="let group"> {{group.DBMDG_INS_DATE}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="DBMDG_UPD_DATE">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by DBMDG_UPD_DATE"> DBMDG_UPD_DATE </th>
+    <td mat-cell *matCellDef="let group"> {{group.DBMDG_UPD_DATE}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="DBMDEV_ID">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by DBMDEV_ID"> DBMDEV_ID </th>
+    <td mat-cell *matCellDef="let group"> {{group.DBMDEV_ID}} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

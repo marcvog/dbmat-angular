@@ -1,0 +1,74 @@
+<h2>Manage developers here</h2>
+
+<div>Enable/Disable Dry-Run:</div>
+<p>
+  <label *ngFor="let option of options">
+    <input type="radio" name="toggle" [(ngModel)]="dryrun" [value]="option.value">{{option.action}}
+  </label>
+</p>
+
+<input type="text" id="firstname-input" #firstName placeholder="First name">
+<input type="text" id="lastname-input" #lastName placeholder="Last name">
+<input type="text" id="email-input" #email placeholder="Email">
+<br><br>
+
+<button type="button" (click)="insertDeveloper(firstName.value,lastName.value,email.value,dryrun)"> Insert </button>
+<button type="button" (click)="resetDeveloper()"> Clear </button>
+<br><br>
+
+<ng-template [ngIf]="developer.message.startsWith('FOR COMMIT')">
+  <div>Click on 'Commit' to confirm the insertion of the following developer:</div>
+  {{developer.message}}
+  <br><br>
+  <button type="button" (click)="insertDeveloper(firstName.value,lastName.value,email.value,'0')"> Commit </button>
+  <br><br>
+</ng-template>
+
+<ng-template [ngIf]="developer.message.startsWith('COMMITTED')">
+  {{developer.message}}
+  <br><br>
+</ng-template>
+
+<ng-template [ngIf]="developer.message.includes('Invalid contact for insertion')">
+  {{developer.message}}
+  <br><br>
+</ng-template>
+
+<div>Choose a developer to delete</div>
+<select [(ngModel)]="deleteMe">
+  <ng-container *ngFor="let developer of contactsList">
+    <option [ngValue]="developer.CONTACT">{{developer.CONTACT}}</option>
+  </ng-container>
+</select>
+
+<button type="button" (click)="deleteDeveloper(deleteMe,dryrun)"> Delete </button>
+<button type="button" (click)="resetName()"> Clear </button>
+<br><br>
+
+<ng-template [ngIf]="name.message.startsWith('FOR DELETE')">
+  <div>Click on 'Commit' to confirm the deletion of the following developer:</div>
+  {{name.message}}
+  <br><br>
+  <button type="button" (click)="deleteDeveloper(deleteMe,'0')"> Commit </button>
+</ng-template>
+
+<ng-template [ngIf]="name.message.startsWith('DELETED')">
+  {{name.message}}
+  <br><br>
+</ng-template>
+
+<ng-template [ngIf]="name.message.includes('Developer not found')">
+  {{name.message}}
+  <br><br>
+</ng-template>
+
+<ng-template [ngIf]="name.message.includes('Failed to delete developer')">
+  {{name.message}}
+  <br><br>
+</ng-template>
+
+<ng-template [ngIf]="name.message.includes('Invalid contact for deletion')">
+  {{name.message}}
+  <br><br>
+</ng-template>
+
