@@ -41,7 +41,3 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# Angular configs
-package*
-tsconfig*
-angular.json
