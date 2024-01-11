@@ -3,7 +3,6 @@ import {Subscription} from 'rxjs';
 import {InsertApiService} from '../insert-api.service';
 import {DeleteApiService} from '../delete-api.service';
 import {GetApiService} from '../get-api.service';
-import {NewDeveloper} from '../new-developer';
 import {Message} from '../message';
 import {ContactName} from '../contact-name';
 import {Developer} from '../../accounts/developer.model';
@@ -19,7 +18,7 @@ export class ManageDevelopersComponent implements OnInit, OnDestroy{
   contactsList!: Developer[];
   developerSub!: Subscription;
   nameSub!: Subscription;
-  developer: NewDeveloper = {'message': ''};
+  developer: Message = {'message': ''};
   name: Message = {'message': ''};
   options = [{'action':'Enable', 'value':'1'}, {'action':'Disable', 'value':'0'}];
   dryrun = '1';
@@ -61,7 +60,7 @@ export class ManageDevelopersComponent implements OnInit, OnDestroy{
     if (contact != ''){
        if (dryrun == '1'){
           this.developerSub = this.insertApi
-            .getNewDeveloper(contact,dryrun)
+            .insertDeveloper(contact,dryrun)
             .subscribe(res => {
                 this.developer = res;
                 console.log('new contact', this.developer);
@@ -71,7 +70,7 @@ export class ManageDevelopersComponent implements OnInit, OnDestroy{
        }
        if (dryrun == '0'){
           this.developerSub = this.insertApi
-            .getNewDeveloper(contact,dryrun)
+            .insertDeveloper(contact,dryrun)
             .subscribe(res => {
                 this.developer = res;
                 console.log('new contact', this.developer);

@@ -3,7 +3,7 @@ import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {API_URL} from '../env';
-import {NewDeveloper} from './new-developer';
+import {Message} from './message';
 import { KeycloakService } from 'keycloak-angular';
 
 @Injectable({
@@ -24,13 +24,18 @@ export class InsertApiService {
     return throwError(err.message || 'Error: Unable to complete request.');
   }
 
-  getNewDeveloper(contact: string, dryrun: string): Observable<NewDeveloper> {
+  insertDeveloper(contact: string, dryrun: string): Observable<Message> {
     const headers = {'Content-Type':'application/x-www-form-urlencoded','Authorization':'Bearer ' + this.token,'Accept':'application/json'};
     return this.http
-      .get<NewDeveloper>(`${API_URL}/insert/?contact=${contact}&dryrun=${dryrun}`,{headers})
+      .get<Message>(`${API_URL}/insert/developer?contact=${contact}&dryrun=${dryrun}`,{headers})
       .pipe(catchError(InsertApiService._handleError));
   }
+
+  insert(model: string, query: string, dryrun: string): Observable<Message> {
+    const headers = {'Content-Type':'application/x-www-form-urlencoded','Authorization':'Bearer ' + this.token,'Accept':'application/json'};
+    return this.http
+      .get<Message>(`${API_URL}/insert/?model=${model}&query=${query}&dryrun=${dryrun}`,{headers})
+      .pipe(catchError(InsertApiService._handleError));
+  }
+
 }
-
-
-

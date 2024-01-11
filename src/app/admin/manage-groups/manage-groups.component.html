@@ -14,25 +14,107 @@
 </p>
 
 <ng-template [ngIf]="workflow=='group'">
-<div>Choose a developer group</div>
-<select [(ngModel)]="group_id" (ngModelChange)="getDevelopers()">
+<div>CHOOSE A GROUP</div>
+<select [(ngModel)]="group_id" (ngModelChange)="getSelectedDevelopers();getAllDevelopersExcept()">
   <ng-container *ngFor="let group of allGroupsList">
     <option [ngValue]="group.DBMDG_ID">{{group.DBMDG_GROUP_NAME}}</option>
   </ng-container>
 </select>
-</ng-template>
-
-<ng-template [ngIf]="workflow=='developer'">
-<div>Choose a developer</div>
-<select [(ngModel)]="developer_id" (ngModelChange)="getGroups()">
-  <ng-container *ngFor="let developer of contactsList">
+<br><br>
+<div>CHOOSE A DEVELOPER TO ADD TO THE GROUP</div>
+<select [(ngModel)]="groupless_developer_id">
+  <ng-container *ngFor="let developer of eligibleDevelopersList">
     <option [ngValue]="developer.DBMDEV_ID">{{developer.CONTACT}}</option>
   </ng-container>
 </select>
+<button type="button" (click)="insertDeveloper(groupless_developer_id,group_id,dryrun)"> Insert </button>
+<br><br>
 </ng-template>
 
-<ng-template [ngIf]="table=='developers'">
-<table mat-table [dataSource]="dataSource_dev" class="mat-elevation-z8">
+<ng-template [ngIf]="workflow=='developer'">
+<div>CHOOSE A DEVELOPER</div>
+<select [(ngModel)]="developer_id" (ngModelChange)="getSelectedGroups();getAllGroupsExcept()">
+  <ng-container *ngFor="let developer of allDevelopersList">
+    <option [ngValue]="developer.DBMDEV_ID">{{developer.CONTACT}}</option>
+  </ng-container>
+</select>
+<br><br>
+<div>CHOOSE A GROUP TO ADD THE DEVELOPER TO</div>
+<select [(ngModel)]="eligible_group_id">
+  <ng-container *ngFor="let group of eligibleGroupsList">
+    <option [ngValue]="group.DBMDG_ID">{{group.DBMDG_GROUP_NAME}}</option>
+  </ng-container>
+</select>
+<button type="button" (click)="insertGroup(developer_id,eligible_group_id,dryrun)"> Insert </button>
+<br><br>
+</ng-template>
+
+<ng-template [ngIf]="response.message.startsWith('FOR COMMIT')">
+  <div>Click on 'COMMIT' to confirm the insertion of the following rows:</div>
+  {{response.message}}
+  <br><br>
+  <ng-template [ngIf]="workflow=='group'">
+  <button type="button" (click)="insertDeveloper(groupless_developer_id,group_id,'0')"> COMMIT </button>
+  </ng-template>
+  <ng-template [ngIf]="workflow=='developer'">
+  <button type="button" (click)="insertGroup(developer_id,eligible_group_id,'0')"> COMMIT </button>
+  </ng-template>
+  <button type="button" (click)="reset()"> CLEAR </button>
+  <br><br>
+</ng-template>
+
+<ng-template [ngIf]="response.message.startsWith('COMMITTED')">
+  {{response.message}}
+  <br><br>
+  <button type="button" (click)="reset()"> CLEAR </button>
+  <br><br>
+</ng-template>
+
+
+<ng-template [ngIf]="workflow == 'group'">
+  <ng-template [ngIf]="dataSource_dev.data.length > 0">
+    <div>CHOOSE DEVELOPERS TO DELETE FROM THE GROUP</div>
+  </ng-template>
+  <ng-template [ngIf]="selection_dev.selected.length > 0">
+    <button type="button" (click)="delDevelopers(selection_dev.selected,dryrun)"> DELETE SELECTED DEVELOPERS </button>
+  </ng-template>
+</ng-template>
+
+
+<ng-template [ngIf]="workflow == 'developer'">
+  <ng-template [ngIf]="dataSource_grp.data.length > 0">
+    <div>CHOOSE GROUPS TO DELETE THE DEVELOPER FROM</div>
+  </ng-template>
+  <ng-template [ngIf]="selection_grp.selected.length > 0">
+    <button type="button" (click)="delGroups(selection_grp.selected,dryrun)"> DELETE SELECTED GROUPS </button>
+  </ng-template>
+</ng-template>
+
+<ng-template [ngIf]="response.message.startsWith('FOR DELETE')">
+  <div>Click on 'COMMIT' to confirm the deletion of the following rows:</div>
+  {{response.message}}
+  <br><br>
+  <ng-template [ngIf]="workflow == 'group'">
+    <button type="button" (click)="delDevelopers(selection_dev.selected,'0')"> COMMIT </button>
+    <button type="button" (click)="reset()"> CLEAR </button>
+  </ng-template>
+  <ng-template [ngIf]="workflow == 'developer'">
+    <button type="button" (click)="delGroups(selection_grp.selected,'0')"> COMMIT </button>
+    <button type="button" (click)="reset()"> CLEAR </button>
+  </ng-template>
+  <br><br>
+</ng-template>
+
+<ng-template [ngIf]="response.message.startsWith('DELETED')">
+  <br><br>
+  {{response.message}}
+  <br><br>
+  <button type="button" (click)="reset()"> CLEAR </button>
+  <br><br>
+</ng-template>
+
+<ng-template [ngIf]="workflow == 'group' && dataSource_dev.data.length > 0">
+<table mat-table [dataSource]="dataSource_dev" *ngIf="dataSource_dev.data.length > 0" class="mat-elevation-z8">
   <!-- Checkbox Column -->
   <ng-container matColumnDef="select">
     <th mat-header-cell *matHeaderCellDef>
@@ -78,11 +160,11 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns_dev;"
       (click)="selection_dev.toggle(row)"></tr>
 </table>
+<br><br>
 </ng-template>
 
-<ng-template [ngIf]="table=='groups'">
-<table mat-table [dataSource]="dataSource_grp" class="mat-elevation-z8"> 
-
+<ng-template [ngIf]="workflow == 'developer' && dataSource_grp.data.length > 0">
+<table mat-table [dataSource]="dataSource_grp" *ngIf="dataSource_grp.data.length > 0" class="mat-elevation-z8">
   <!-- Checkbox Column -->
   <ng-container matColumnDef="select">
     <th mat-header-cell *matHeaderCellDef>
@@ -128,17 +210,6 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns_grp;"
       (click)="selection_grp.toggle(row)"></tr>
 </table>
-</ng-template>
-
-<ng-template [ngIf]="table=='developers'">
-<li *ngFor="let item of selection_dev.selected">
-  {{item.DBMDEV_ID}}
-</li>
-</ng-template>
-
-<ng-template [ngIf]="table=='groups'">
-<li *ngFor="let item of selection_grp.selected">
-  {{item.DBMDG_ID}}
-</li>
+<br><br>
 </ng-template>
 

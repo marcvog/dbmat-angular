@@ -27,7 +27,15 @@ export class DeleteApiService {
   deleteDeveloper(contact: string, dryrun: string): Observable<Message> {
     const headers = {'Content-Type':'application/x-www-form-urlencoded','Authorization':'Bearer ' + this.token,'Accept':'application/json'};
     return this.http
-      .get<Message>(`${API_URL}/delete/?contact=${contact}&dryrun=${dryrun}`,{headers})
+      .get<Message>(`${API_URL}/delete/developer?contact=${contact}&dryrun=${dryrun}`,{headers})
       .pipe(catchError(DeleteApiService._handleError));
   }
+
+  delete(model: string, query: string, dryrun: string): Observable<Message> {
+    const headers = {'Content-Type':'application/x-www-form-urlencoded','Authorization':'Bearer ' + this.token,'Accept':'application/json'};
+    return this.http
+      .get<Message>(`${API_URL}/delete/?model=${model}&query=${query}&dryrun=${dryrun}`,{headers})
+      .pipe(catchError(DeleteApiService._handleError));
+  }
+
 }

@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, AfterContentInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Message} from '../message';
 
 import {GetApiService} from '../get-api.service';
-import {DevGroupsApiService} from '../../accounts/dev-groups-api.service';
+import {InsertApiService} from '../insert-api.service';
+import {DeleteApiService} from '../delete-api.service';
 import {ContactName} from '../contact-name';
 import {Developer} from '../../accounts/developer.model';
 import {DevGroup} from '../../accounts/dev-group.model';
@@ -18,28 +19,35 @@ import {SelectionModel} from '@angular/cdk/collections';
   styleUrls: ['./manage-groups.component.css']
 })
 export class ManageGroupsComponent implements OnInit, OnDestroy {
-  contactsListSubs!: Subscription;
-  contactsList!: Developer[];
+  allDevelopersListSubs!: Subscription;
+  allDevelopersList!: Developer[];
   allGroupsListSubs!: Subscription;
   allGroupsList!: DevGroup[];
   devgroupsListSubs!: Subscription;
   devgroupsList!: DevGroup[];
   developersListSubs!: Subscription;
   developersList!: Developer[];
+  eligibleDevelopersListSubs!: Subscription;
+  eligibleDevelopersList!: Developer[];
+  eligibleGroupsListSubs!: Subscription;
+  eligibleGroupsList!: DevGroup[];
+  responseSub!: Subscription;
+  response: Message = {'message': ''};
+  itemsList!: any[];
 
-  name: Message = {'message': ''};
   options = [{'action':'Enable', 'value':'1'}, {'action':'Disable', 'value':'0'}];
   items = [{'action':'Developer groups', 'value':'group'}, {'action':'Developer', 'value':'developer'}];
   dryrun = '1';
-  table!: string;
   workflow = 'group';
   developer_id!: number;
   group_id!: number;
+  groupless_developer_id!: number;
+  eligible_group_id!: number;
 
   displayedColumns_dev: string[] = ['select', 'DBMDEV_ID', 'CONTACT', 'DBMDEV_INS_DATE', 'DBMDEV_UPD_DATE', 'CONTACT_NAME', 'CONTACT_EMAIL'];
   displayedColumns_grp: string[] = ['select', 'DBMDG_ID', 'DBMDG_GROUP_NAME', 'DBMDG_GROUP_DESC', 'DBMDG_INS_DATE', 'DBMDG_UPD_DATE', 'DBMDEV_ID'];
-  dataSource_dev! : MatTableDataSource<Developer>;
-  dataSource_grp! : MatTableDataSource<DevGroup>;   
+  //dataSource_dev! : MatTableDataSource<Developer>;
+  //dataSource_grp! : MatTableDataSource<DevGroup>;   
  
   getAllDevelopers='* FROM ATLAS_DBMON.DBMAT_DEVELOPERS ORDER BY CONTACT_NAME';
 
@@ -53,9 +61,11 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
                   WHERE DG.DBMDG_ID IN (SELECT UNIQUE DBMDG_ID FROM ATLAS_DBMON.DBMAT_DG2DEVS)
                   AND DG.DBMDG_ID = DG2DEV.DBMDG_ID AND DG2DEV.DBMDEV_ID = `;
 
-
   selection_dev = new SelectionModel<Developer>(true, []);
   selection_grp = new SelectionModel<DevGroup>(true, []);
+
+  dataSource_dev = new MatTableDataSource<Developer>();
+  dataSource_grp = new MatTableDataSource<DevGroup>();
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllDevSelected() {
@@ -106,15 +116,17 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
   }
 
 
-  constructor(private getApi: GetApiService, private devgroupsApi: DevGroupsApiService) {
+  constructor(private getApi: GetApiService, private insertApi: InsertApiService, private deleteApi: DeleteApiService) {
   }
 
   ngOnInit() {
-    this.contactsListSubs = this.getApi
+    this.allDevelopersListSubs = this.getApi
       .get('DBMAT_DEVELOPERS', this.getAllDevelopers)
       .subscribe(res => {
-          this.contactsList = res;
-          this.developer_id = this.contactsList[0].DBMDEV_ID;
+          this.allDevelopersList = res;
+          this.developer_id = this.allDevelopersList[0].DBMDEV_ID;
+          this.getSelectedGroups();
+          this.getAllGroupsExcept();
         },
         console.error
       );
@@ -123,40 +135,216 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
       .subscribe(res => {
           this.allGroupsList = res;
           this.group_id = this.allGroupsList[0].DBMDG_ID;
+          this.getSelectedDevelopers();
+          this.getAllDevelopersExcept();
         },
         console.error
-      ); 
+      );
   }
+
   ngOnDestroy() {
-    this.contactsListSubs.unsubscribe();
+    this.allDevelopersListSubs.unsubscribe();
     this.allGroupsListSubs.unsubscribe();
     this.developersListSubs.unsubscribe();
     this.devgroupsListSubs.unsubscribe();
+    this.eligibleDevelopersListSubs.unsubscribe();
+    this.responseSub.unsubscribe();
   }
 
-  getDevelopers () {
+  getSelectedDevelopers () {
     this.selection_dev.clear();
     this.developersListSubs = this.getApi
       .get('DBMAT_DEVELOPERS', this.getSelDevelopers + this.group_id)
       .subscribe(res => {
           this.developersList = res;
-          this.dataSource_dev = new MatTableDataSource(res);
-          this.table = 'developers'
+          this.dataSource_dev.data = res;
         },
         console.error
       );  
   }
 
-  getGroups () {
+  getSelectedGroups () {
     this.selection_grp.clear();
     this.devgroupsListSubs = this.getApi
       .get('DBMAT_DEV_GROUPS', this.getSelGroups + this.developer_id)
       .subscribe(res => {
           this.devgroupsList = res;
-          this.dataSource_grp = new MatTableDataSource(res);
-          this.table = 'groups'
+          this.dataSource_grp.data = res;
         },
         console.error
       );
   }
+
+  getAllDevelopersExcept() {
+    const query = "* FROM ATLAS_DBMON.DBMAT_DEVELOPERS WHERE DBMDEV_ID NOT IN (SELECT UNIQUE DBMDEV_ID FROM ATLAS_DBMON.DBMAT_DG2DEVS WHERE DBMDG_ID = "+String(this.group_id)+") ORDER BY CONTACT_NAME";
+    this.eligibleDevelopersListSubs = this.getApi
+      .get('DBMAT_DEVELOPERS', query)
+      .subscribe(res => {
+          this.eligibleDevelopersList = res;
+          this.groupless_developer_id = this.eligibleDevelopersList[0].DBMDEV_ID;
+        },
+        console.error
+      );
+  }
+
+  getAllGroupsExcept() {
+    const query = "* FROM ATLAS_DBMON.DBMAT_DEV_GROUPS WHERE DBMDG_ID NOT IN (SELECT UNIQUE DBMDG_ID FROM ATLAS_DBMON.DBMAT_DG2DEVS WHERE DBMDEV_ID = "+String(this.developer_id)+") ORDER BY DBMDG_GROUP_NAME";
+    this.eligibleGroupsListSubs = this.getApi
+      .get('DBMAT_DEV_GROUPS', query)
+      .subscribe(res => {
+          this.eligibleGroupsList = res;
+          this.eligible_group_id = this.eligibleGroupsList[0].DBMDG_ID;
+        },
+        console.error
+      );
+  }
+
+  insertDeveloper(developer_id: number, group_id: number, dryrun: string) {
+
+    let columns: Array<string> = ['DBMDEV_ID','DBMDG_ID'];
+    let values: Array<string> = [String(developer_id),String(group_id)];
+    let data = {'columns':columns,'values':values};
+    const query = JSON.stringify(data);
+
+    if (developer_id != undefined && group_id != undefined){
+       if (dryrun == '1'){
+          this.responseSub = this.insertApi
+            .insert('DBMAT_DG2DEVS',query,dryrun)
+            .subscribe(res => {
+                this.response = res;
+                //console.log('query', query);
+              },
+              console.error
+            );
+       }
+       if (dryrun == '0'){
+          this.responseSub = this.insertApi
+            .insert('DBMAT_DG2DEVS',query,dryrun)
+            .subscribe(res => {
+                this.response = res;
+                //console.log('query', query);
+                //this.ngOnInit();
+                this.getAllDevelopersExcept();
+                this.getSelectedDevelopers();
+              },
+              console.error
+            );
+       }
+    }
+    else {
+       this.response = {'message': 'No items to insert'}
+    }
+  }
+
+
+  insertGroup(developer_id: number, group_id: number, dryrun: string) {
+
+    let columns: Array<string> = ['DBMDEV_ID','DBMDG_ID'];
+    let values: Array<string> = [String(developer_id),String(group_id)];
+    let data = {'columns':columns,'values':values};
+    const query = JSON.stringify(data);
+
+    if (developer_id != undefined && group_id != undefined){
+       if (dryrun == '1'){
+          this.responseSub = this.insertApi
+            .insert('DBMAT_DG2DEVS',query,dryrun)
+            .subscribe(res => {
+                this.response = res;
+                //console.log('query', query);
+              },
+              console.error
+            );
+       }
+       if (dryrun == '0'){
+          this.responseSub = this.insertApi
+            .insert('DBMAT_DG2DEVS',query,dryrun)
+            .subscribe(res => {
+                this.response = res;
+                //console.log('query', query);
+                //this.ngOnInit();
+                this.getAllGroupsExcept();
+                this.getSelectedGroups();
+              },
+              console.error
+            );
+       }
+    }
+    else {
+       this.response = {'message': 'No items to insert'}
+    }
+  }
+
+  delDevelopers (developers: Array<Developer>, dryrun: string) {    
+    //this.reset();
+    this.itemsList=developers.map(function(obj) { return obj.DBMDEV_ID; });
+    //console.log('number of items in developers', this.itemsList.length);
+    if (developers.length != 0){
+       if (dryrun == '1'){
+          this.responseSub = this.deleteApi
+            .delete('DBMAT_DG2DEVS',"FROM ATLAS_DBMON.DBMAT_DG2DEVS WHERE DBMDEV_ID IN ("+this.itemsList.join(',')+") AND DBMDG_ID = " + this.group_id,'1')
+            .subscribe(res => {
+                this.response = res;
+                console.log('Server response', this.response);
+              },
+              console.error
+            );
+       }
+       if (dryrun == '0'){
+          this.responseSub = this.deleteApi
+            .delete('DBMAT_DG2DEVS',"FROM ATLAS_DBMON.DBMAT_DG2DEVS WHERE DBMDEV_ID IN ("+this.itemsList.join(',')+") AND DBMDG_ID = " + this.group_id,'0')
+            .subscribe(res => {
+                this.response = res;
+                console.log('Server response', this.response);
+                this.getSelectedDevelopers();
+                this.getAllDevelopersExcept();
+              },
+              console.error
+            );
+       }
+    }
+    else {
+       this.response = {'message': 'Empty list of selected developers'}
+    }
+  }
+
+  delGroups (groups: Array<DevGroup>, dryrun: string) {
+    //this.reset();
+    this.itemsList=groups.map(function(obj) { return obj.DBMDG_ID; });
+    //console.log('number of items in groups', this.itemsList.length);
+    if (groups.length != 0){
+       if (dryrun == '1'){
+          this.responseSub = this.deleteApi
+            .delete('DBMAT_DG2DEVS',"FROM ATLAS_DBMON.DBMAT_DG2DEVS WHERE DBMDG_ID IN ("+this.itemsList.join(',')+") AND DBMDEV_ID = " + this.developer_id,'1')
+            .subscribe(res => {
+                this.response = res;
+                console.log('Server response', this.response);
+              },
+              console.error
+            );
+       }
+       if (dryrun == '0'){
+          this.responseSub = this.deleteApi
+            .delete('DBMAT_DG2DEVS',"FROM ATLAS_DBMON.DBMAT_DG2DEVS WHERE DBMDG_ID IN ("+this.itemsList.join(',')+") AND DBMDEV_ID = " + this.developer_id,'0')
+            .subscribe(res => {
+                this.response = res;
+                console.log('Server response', this.response);
+                this.getSelectedGroups();
+                this.getAllGroupsExcept();
+              },
+              console.error
+            );
+       }
+    }
+    else {
+       this.response = {'message': 'Empty list of selected groups'}
+    }
+  }
+
+  reset(){
+    this.response = {'message': ''};
+    this.dryrun = '1';
+    //this.selection_dev.clear();
+    this.selection_grp.clear();
+  }
+
 }
