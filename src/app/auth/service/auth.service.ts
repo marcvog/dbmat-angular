@@ -26,6 +26,7 @@ export class AuthService {
   }
 
   public isLoggedIn() : Promise<boolean> {
+    // @ts-ignore
     return this.keycloakService.isLoggedIn();
   }
 
