@@ -34,6 +34,11 @@
   <br><br>
 </ng-template>
 
+<ng-template [ngIf]="developer.message.startsWith('ERROR')">
+  {{developer.message}}
+  <br><br>
+</ng-template>
+
 <div>Choose a developer to delete</div>
 <select [(ngModel)]="deleteMe">
   <ng-container *ngFor="let developer of contactsList">
