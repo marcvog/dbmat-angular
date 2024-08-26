@@ -11,12 +11,14 @@ import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserNotAuthorizedComponent } from './user-not-authorized/user-not-authorized.component';
 import { AdminModule } from './admin/admin.module';
+import { IntroComponent } from './intro/intro.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PageNotFoundComponent,
     UserNotAuthorizedComponent,
+    IntroComponent,
   ],
   imports: [
     FormsModule,
