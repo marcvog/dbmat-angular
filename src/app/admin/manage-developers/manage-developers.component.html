@@ -7,12 +7,10 @@
   </label>
 </p>
 
-<input type="text" id="firstname-input" #firstName placeholder="First name">
-<input type="text" id="lastname-input" #lastName placeholder="Last name">
-<input type="text" id="email-input" #email placeholder="Email">
+<input type="text" id="contact-id" #contact placeholder="Name Surname <email>">
 <br><br>
 
-<button type="button" (click)="insertDeveloper(firstName.value,lastName.value,email.value,dryrun)"> Insert </button>
+<button type="button" (click)="insertDeveloper(contact.value,dryrun)"> Insert </button>
 <button type="button" (click)="resetDeveloper()"> Clear </button>
 <br><br>
 
@@ -20,7 +18,7 @@
   <div>Click on 'Commit' to confirm the insertion of the following developer:</div>
   {{developer.message}}
   <br><br>
-  <button type="button" (click)="insertDeveloper(firstName.value,lastName.value,email.value,'0')"> Commit </button>
+  <button type="button" (click)="insertDeveloper(contact.value,'0')"> Commit </button>
   <br><br>
 </ng-template>
 

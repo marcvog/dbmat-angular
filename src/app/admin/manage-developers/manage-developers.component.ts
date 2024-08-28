@@ -27,9 +27,7 @@ export class ManageDevelopersComponent implements OnInit, OnDestroy{
 
   // Access the newItem input field
   //@ViewChild('newItem') fullNameInput: any;
-  @ViewChild('firstName') firstNameInput: any;
-  @ViewChild('lastName') lastNameInput: any;
-  @ViewChild('email') emailInput: any;
+  @ViewChild('contact') contactInput: any;
 
   constructor(private insertApi: InsertApiService, private deleteApi: DeleteApiService, private getApi: GetApiService) {
   }
@@ -49,14 +47,15 @@ export class ManageDevelopersComponent implements OnInit, OnDestroy{
     this.contactsListSubs.unsubscribe();
   }
 
-  checkContact(firstName: string, lastName: string, email: string): string {
-    const contact = firstName.replace(/\s/g,"")+" "+lastName.replace(/\s/g,"")+" <"+email.replace(/\s/g,"")+">";
+  // Do some checks on the developer entry
+  checkContact(name: string): string {
+    const contact = name;
     return contact;
   }
 
-  insertDeveloper(firstName: string, lastName: string, email: string, dryrun: string) {
+  insertDeveloper(name: string, dryrun: string) {
     this.resetName();
-    const contact = this.checkContact(firstName, lastName, email);
+    const contact = this.checkContact(name);
     if (contact != ''){
        if (dryrun == '1'){
           this.developerSub = this.insertApi
@@ -120,9 +119,7 @@ export class ManageDevelopersComponent implements OnInit, OnDestroy{
     this.dryrun = '1';
     // Clear the input field
     //this.fullNameInput.nativeElement.value = '';
-    this.firstNameInput.nativeElement.value = '';
-    this.lastNameInput.nativeElement.value = '';
-    this.emailInput.nativeElement.value = '';
+    this.contactInput.nativeElement.value = '';
   }
 
   resetName(){
