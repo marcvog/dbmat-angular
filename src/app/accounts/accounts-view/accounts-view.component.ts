@@ -5,6 +5,7 @@ import { AccountsViewApiService} from '../accounts-view-api.service';
 import { AccountsView } from '../accounts-view.model';
 import {MatTableDataSource} from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-accounts-view',
@@ -198,15 +199,17 @@ export class AccountsViewComponent implements OnInit, OnDestroy, AfterViewInit {
   reducedDisplayedColumns!: any[];
   //reducedDisplayedColumns = this.ckdColumns.map(c => c.columnDef);
 
-  constructor(private accountsviewApi: AccountsViewApiService, private _liveAnnouncer: LiveAnnouncer) {
+  constructor(private accountsviewApi: AccountsViewApiService, private route: ActivatedRoute, private _liveAnnouncer: LiveAnnouncer) {
   }
 
   @ViewChild(MatSort) sort: MatSort;
-  @ViewChild('filter') filter: string;
+  //@ViewChild('filter') filter: string;
+  filter: string;
   //@ViewChild('reducedDisplayedColumns') reducedDisplayedColumns: string[];
   //reducedDisplayedColumns: string[];
 
   ngOnInit() {
+    this.filter = this.route.snapshot.params['filter'];
     this.accountsviewListSubs = this.accountsviewApi
       .getAccountsView('DBMAT_V_ACCOUNTS')
       .subscribe(res => {

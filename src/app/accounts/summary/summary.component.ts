@@ -4,7 +4,8 @@ import { AccountsViewApiService} from '../accounts-view-api.service';
 import { AccountsView } from '../accounts-view.model';
 import {MatTableDataSource} from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+
 
 export interface DevGroup {
   DBMDG_GROUP_NAME: string;
@@ -109,7 +110,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     },
   ];
 
-  constructor(private accountsviewApi: AccountsViewApiService, private router: Router) {
+  constructor(private accountsviewApi: AccountsViewApiService, private route: ActivatedRoute, private router: Router) {
   }
 
   reducedDisplayedColumns1=['GLOBAL_NAME', 'USERNAME'];
@@ -118,9 +119,12 @@ export class SummaryComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<AccountsView>();
 
   @ViewChild(MatSort) sort: MatSort;
-  filter = 'Aleksandr Alekseev';
+  filter: string;
 
   ngOnInit() {
+    this.filter = this.route.snapshot.params['filter'];
+    if (!this.filter) {
+	    this.filter = 'Aleksandr Alekseev'};
     this.accountsviewListSubs = this.accountsviewApi
       .getAccountsView('DBMAT_V_ACCOUNTS')
       .subscribe(res => {
