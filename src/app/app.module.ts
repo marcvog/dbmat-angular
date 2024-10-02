@@ -12,6 +12,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserNotAuthorizedComponent } from './user-not-authorized/user-not-authorized.component';
 import { AdminModule } from './admin/admin.module';
 import { IntroComponent } from './intro/intro.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { IntroComponent } from './intro/intro.component';
     PageNotFoundComponent,
     UserNotAuthorizedComponent,
     IntroComponent,
+    FooterComponent,
   ],
   imports: [
     FormsModule,
