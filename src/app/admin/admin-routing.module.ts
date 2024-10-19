@@ -13,8 +13,8 @@ const routes: Routes = [
       {
         path: '',
         children: [
-          { path: 'manage-developers', component: ManageDevelopersComponent, canActivate: [AuthGuard], data: { roles: ["default-role", "dbmat_admins"] } },
-          { path: 'manage-groups', component: ManageGroupsComponent, canActivate: [AuthGuard], data: { roles: ["default-role", "dbmat_admins"] } },
+          { path: 'manage-developers', component: ManageDevelopersComponent, canActivate: [AuthGuard], data: { roles: ["dbmat_users", "dbmat_admins"] } },
+          { path: 'manage-groups', component: ManageGroupsComponent, canActivate: [AuthGuard], data: { roles: ["dbmat_users", "dbmat_admins"] } },
         ]
       }
     ]

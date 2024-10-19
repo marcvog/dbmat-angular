@@ -16,16 +16,16 @@ const routes: Routes = [
       {
         path: '',
         children: [
-          { path: 'accounts', component: AccountsComponent, canActivate: [AuthGuard], data: { roles: ["default-role"] } },
-          { path: 'accounts/:filter', component: AccountsComponent, canActivate: [AuthGuard], data: { roles: ["default-role"] } },
-          { path: 'developers', component: DevelopersComponent, canActivate: [AuthGuard], data: { roles: ["default-role"] } },
-          { path: 'view', component: AccountsViewComponent, canActivate: [AuthGuard], data: { roles: ["default-role"] } },
-	  { path: 'view/:filter', component: AccountsViewComponent, canActivate: [AuthGuard], data: { roles: ["default-role"] } },
-          { path: 'groups', component: DevGroupsComponent, canActivate: [AuthGuard], data: { roles: ["default-role"] } },
-          { path: 'groups/:filter', component: DevGroupsComponent, canActivate: [AuthGuard], data: { roles: ["default-role"] } },
-          //{ path: 'summary', component: SummaryComponent, canActivate: [AuthGuard], data: { roles: ["default-role"] }},
-          { path: 'summary', component: SummaryComponent, canActivate: [AuthGuard], data: { roles: ["default-role"] }},
-	  { path: 'summary/:filter', component: SummaryComponent, canActivate: [AuthGuard], data: { roles: ["default-role"] }},
+          { path: 'accounts', component: AccountsComponent, canActivate: [AuthGuard], data: { roles: ["dbmat_users"] } },
+          { path: 'accounts/:filter', component: AccountsComponent, canActivate: [AuthGuard], data: { roles: ["dbmat_users"] } },
+          { path: 'developers', component: DevelopersComponent, canActivate: [AuthGuard], data: { roles: ["dbmat_users"] } },
+          { path: 'view', component: AccountsViewComponent, canActivate: [AuthGuard], data: { roles: ["dbmat_users"] } },
+	  { path: 'view/:filter', component: AccountsViewComponent, canActivate: [AuthGuard], data: { roles: ["dbmat_users"] } },
+          { path: 'groups', component: DevGroupsComponent, canActivate: [AuthGuard], data: { roles: ["dbmat_users"] } },
+          { path: 'groups/:filter', component: DevGroupsComponent, canActivate: [AuthGuard], data: { roles: ["dbmat_users"] } },
+          //{ path: 'summary', component: SummaryComponent, canActivate: [AuthGuard], data: { roles: ["dbmat_users"] }},
+          { path: 'summary', component: SummaryComponent, canActivate: [AuthGuard], data: { roles: ["dbmat_users"] }},
+	  { path: 'summary/:filter', component: SummaryComponent, canActivate: [AuthGuard], data: { roles: ["dbmat_users"] }},
         ]
       }
     ]
