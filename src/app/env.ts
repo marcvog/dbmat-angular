@@ -1,1 +1,1 @@
-export const API_URL = 'http://dbmat-angular.cern.ch:5001';
+export const API_URL = 'http://flask-backend-service:5000';
