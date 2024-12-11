@@ -1,1 +1,1 @@
-export const API_URL = 'http://flask-backend-service:5000';
+export const API_URL = '/api';
