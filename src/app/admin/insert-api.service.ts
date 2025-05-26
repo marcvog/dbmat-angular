@@ -27,7 +27,7 @@ export class InsertApiService {
   insertDeveloper(contact: string, dryrun: string): Observable<Message> {
     const headers = {'Content-Type':'application/x-www-form-urlencoded','Authorization':'Bearer ' + this.token,'Accept':'application/json'};
     return this.http
-      .get<Message>(`${API_URL}/insert/developer?contact=${contact}&dryrun=${dryrun}`,{headers})
+      .get<Message>(`${API_URL}/insert/developer/?contact=${contact}&dryrun=${dryrun}`,{headers})
       .pipe(catchError(InsertApiService._handleError));
   }
 
