@@ -6,6 +6,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
+# Run audit fix after installing dependencies
+RUN npm audit fix
+
 COPY . .
 RUN npm run build -- --configuration production
 
