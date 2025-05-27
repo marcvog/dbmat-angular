@@ -7,7 +7,7 @@ COPY package*.json ./
 RUN npm install
 
 # Run audit fix after installing dependencies
-RUN npm audit fix
+#RUN npm audit fix || true
 
 COPY . .
 RUN npm run build -- --configuration production
