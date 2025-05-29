@@ -1,5 +1,5 @@
 variables:
-    IMAGE: dbmat-angular-k8s-prod
+    IMAGE: dbmat-angular-k8s-dev
     VERSION: "1.1"
 
 include:
