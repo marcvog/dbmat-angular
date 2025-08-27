@@ -28,7 +28,7 @@ export class DevGroupsComponent {
   ngOnInit() {
     this.filter = this.route.snapshot.params['filter'];
     this.devgroupsListSubs = this.devgroupsApi
-      .getDevGroups('*','DBMAT_DEV_GROUPS','DBMDG_GROUP_NAME%20like%20%27ATLAS_%25%27','DBMDG_GROUP_NAME')
+      .getDevGroups('*','DBMAT_DEV_GROUPS','DBMDG_GROUP_NAME','like','%27ATLAS_%25%27','DBMDG_GROUP_NAME')
       .subscribe(res => {
           this.devgroupsList = res;
           this.dataSource = new MatTableDataSource(res);
