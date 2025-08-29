@@ -25,10 +25,10 @@ export class DevGroupsApiService {
   }
 
   // GET list of public, future events
-  getDevGroups(column: string, table: string, where:string, order: string): Observable<DevGroup[]> {
+  getDevGroups(column: string, table: string, filter_column:string, filter_op:string, filter_value:string, order: string): Observable<DevGroup[]> {
     const headers = {'Content-Type':'application/x-www-form-urlencoded','Authorization':'Bearer ' + this.token,'Accept':'application/json'};
     return this.http
-      .get<DevGroup[]>(`${API_URL}/query/?column=${column}&table=${table}&where=${where}&order=${order}`,{headers})
+      .get<DevGroup[]>(`${API_URL}/query/?column=${column}&table=${table}&filter_column=${filter_column}&filter_op=${filter_op}&filter_value=${filter_value}&order=${order}`,{headers})
       .pipe(catchError(DevGroupsApiService._handleError));
   }
 
