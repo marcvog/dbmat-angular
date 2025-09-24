@@ -31,10 +31,10 @@ export class InsertApiService {
       .pipe(catchError(InsertApiService._handleError));
   }
 
-  insert(model: string, query: string, dryrun: string): Observable<Message> {
+  insert(model: string, data: string, dryrun: string): Observable<Message> {
     const headers = {'Content-Type':'application/x-www-form-urlencoded','Authorization':'Bearer ' + this.token,'Accept':'application/json'};
     return this.http
-      .get<Message>(`${API_URL}/insert/?model=${model}&query=${query}&dryrun=${dryrun}`,{headers})
+      .get<Message>(`${API_URL}/insert/?model=${model}&data=${data}&dryrun=${dryrun}`,{headers})
       .pipe(catchError(InsertApiService._handleError));
   }
 

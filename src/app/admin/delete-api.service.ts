@@ -31,10 +31,14 @@ export class DeleteApiService {
       .pipe(catchError(DeleteApiService._handleError));
   }
 
-  delete(model: string, query: string, dryrun: string): Observable<Message> {
+  delete(model: string, dataArray: number[], groupId: number, dryrun: string): Observable<Message> {
     const headers = {'Content-Type':'application/x-www-form-urlencoded','Authorization':'Bearer ' + this.token,'Accept':'application/json'};
+    // Build the query object
+    const tmpArray = { data: dataArray };
+    // Encode as JSON string
+    const data = encodeURIComponent(JSON.stringify(tmpArray));
     return this.http
-      .get<Message>(`${API_URL}/delete/?model=${model}&query=${query}&dryrun=${dryrun}`,{headers})
+      .get<Message>(`${API_URL}/delete/?model=${model}&data=${data}&groupid=${groupId}&dryrun=${dryrun}`,{headers})
       .pipe(catchError(DeleteApiService._handleError));
   }
 

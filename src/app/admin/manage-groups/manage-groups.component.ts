@@ -204,7 +204,7 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
     let columns: Array<string> = ['DBMDEV_ID','DBMDG_ID'];
     let values: Array<string> = [String(developer_id),String(group_id)];
     let data = {'columns':columns,'values':values};
-    const query = JSON.stringify(data);
+    const query = encodeURIComponent(JSON.stringify(data));
 
     if (developer_id != undefined && group_id != undefined){
        if (dryrun == '1'){
@@ -242,7 +242,7 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
     let columns: Array<string> = ['DBMDEV_ID','DBMDG_ID'];
     let values: Array<string> = [String(developer_id),String(group_id)];
     let data = {'columns':columns,'values':values};
-    const query = JSON.stringify(data);
+    const query = encodeURIComponent(JSON.stringify(data));
 
     if (developer_id != undefined && group_id != undefined){
        if (dryrun == '1'){
@@ -281,7 +281,7 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
     if (developers.length != 0){
        if (dryrun == '1'){
           this.responseSub = this.deleteApi
-            .delete('DBMAT_DG2DEVS',"FROM ATLAS_DBMON.DBMAT_DG2DEVS WHERE DBMDEV_ID IN ("+this.itemsList.join(',')+") AND DBMDG_ID = " + this.group_id,'1')
+            .delete('DBMAT_DG2DEVS',this.itemsList,this.group_id,'1')
             .subscribe(res => {
                 this.response = res;
                 console.log('Server response', this.response);
@@ -291,7 +291,7 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
        }
        if (dryrun == '0'){
           this.responseSub = this.deleteApi
-            .delete('DBMAT_DG2DEVS',"FROM ATLAS_DBMON.DBMAT_DG2DEVS WHERE DBMDEV_ID IN ("+this.itemsList.join(',')+") AND DBMDG_ID = " + this.group_id,'0')
+            .delete('DBMAT_DG2DEVS',this.itemsList,this.group_id,'0')
             .subscribe(res => {
                 this.response = res;
                 console.log('Server response', this.response);
@@ -314,7 +314,7 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
     if (groups.length != 0){
        if (dryrun == '1'){
           this.responseSub = this.deleteApi
-            .delete('DBMAT_DG2DEVS',"FROM ATLAS_DBMON.DBMAT_DG2DEVS WHERE DBMDG_ID IN ("+this.itemsList.join(',')+") AND DBMDEV_ID = " + this.developer_id,'1')
+            .delete('DBMAT_DG2DEVS',this.itemsList,this.group_id,'1')
             .subscribe(res => {
                 this.response = res;
                 console.log('Server response', this.response);
@@ -324,7 +324,7 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
        }
        if (dryrun == '0'){
           this.responseSub = this.deleteApi
-            .delete('DBMAT_DG2DEVS',"FROM ATLAS_DBMON.DBMAT_DG2DEVS WHERE DBMDG_ID IN ("+this.itemsList.join(',')+") AND DBMDEV_ID = " + this.developer_id,'0')
+            .delete('DBMAT_DG2DEVS',this.itemsList,this.group_id,'0')
             .subscribe(res => {
                 this.response = res;
                 console.log('Server response', this.response);
