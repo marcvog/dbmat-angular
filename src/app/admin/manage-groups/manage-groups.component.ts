@@ -49,10 +49,6 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
   //dataSource_dev! : MatTableDataSource<Developer>;
   //dataSource_grp! : MatTableDataSource<DevGroup>;   
  
-  getAllDevelopers='* FROM ATLAS_DBMON.DBMAT_DEVELOPERS ORDER BY CONTACT_NAME';
-
-  getAllGroups='* FROM ATLAS_DBMON.DBMAT_DEV_GROUPS WHERE DBMDG_GROUP_NAME%20like%20%27ATLAS_%25%27 ORDER BY DBMDG_GROUP_NAME';
-
   getSelDevelopers = `DEV.* FROM ATLAS_DBMON.DBMAT_DEVELOPERS DEV, ATLAS_DBMON.DBMAT_DG2DEVS DG2DEV
                       WHERE DEV.DBMDEV_ID IN (SELECT UNIQUE DBMDEV_ID FROM ATLAS_DBMON.DBMAT_DG2DEVS)
                       AND DEV.DBMDEV_ID = DG2DEV.DBMDEV_ID AND DG2DEV.DBMDG_ID = `;
@@ -121,7 +117,7 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.allDevelopersListSubs = this.getApi
-      .get('DBMAT_DEVELOPERS', this.getAllDevelopers)
+      .getAllDevelopers()
       .subscribe(res => {
           this.allDevelopersList = res;
           this.developer_id = this.allDevelopersList[0].DBMDEV_ID;
@@ -131,7 +127,7 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
         console.error
       );
     this.allGroupsListSubs = this.getApi
-      .get('DBMAT_DEV_GROUPS', this.getAllGroups)
+      .getAllGroups()
       .subscribe(res => {
           this.allGroupsList = res;
           this.group_id = this.allGroupsList[0].DBMDG_ID;

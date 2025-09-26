@@ -34,4 +34,18 @@ export class GetApiService {
       .pipe(catchError(GetApiService._handleError));
   }
 
+  getAllGroups(): Observable<any[]> {
+    const headers = {'Content-Type':'application/x-www-form-urlencoded','Authorization':'Bearer ' + this.token,'Accept':'application/json'};
+    return this.http
+      .get<any[]>(`${API_URL}/groups/`,{headers})
+      .pipe(catchError(GetApiService._handleError));
+  }
+
+  getAllDevelopers(): Observable<any[]> {
+    const headers = {'Content-Type':'application/x-www-form-urlencoded','Authorization':'Bearer ' + this.token,'Accept':'application/json'};
+    return this.http
+      .get<any[]>(`${API_URL}/developers/`,{headers})
+      .pipe(catchError(GetApiService._handleError));
+  }
+
 }
