@@ -31,7 +31,7 @@ export class DeleteApiService {
       .pipe(catchError(DeleteApiService._handleError));
   }
 
-  delete(model: string, dataArray: number[], groupId: number, dryrun: string): Observable<Message> {
+  deleteDevelopersFromGroup(model: string, dataArray: number[], groupId: number, dryrun: string): Observable<Message> {
     const headers = {'Content-Type':'application/x-www-form-urlencoded','Authorization':'Bearer ' + this.token,'Accept':'application/json'};
     // Build the query object
     const tmpArray = { data: dataArray };
@@ -39,6 +39,17 @@ export class DeleteApiService {
     const data = encodeURIComponent(JSON.stringify(tmpArray));
     return this.http
       .get<Message>(`${API_URL}/delete/?model=${model}&data=${data}&groupid=${groupId}&dryrun=${dryrun}`,{headers})
+      .pipe(catchError(DeleteApiService._handleError));
+  }
+
+  deleteGroupsFromDeveloper(model: string, dataArray: number[], developerId: number, dryrun: string): Observable<Message> {
+    const headers = {'Content-Type':'application/x-www-form-urlencoded','Authorization':'Bearer ' + this.token,'Accept':'application/json'};
+    // Build the query object
+    const tmpArray = { data: dataArray };
+    // Encode as JSON string
+    const data = encodeURIComponent(JSON.stringify(tmpArray));
+    return this.http
+      .get<Message>(`${API_URL}/delete/?model=${model}&data=${data}&developerid=${developerId}&dryrun=${dryrun}`,{headers})
       .pipe(catchError(DeleteApiService._handleError));
   }
 

@@ -276,7 +276,7 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
     if (developers.length != 0){
        if (dryrun == '1'){
           this.responseSub = this.deleteApi
-            .delete('DBMAT_DG2DEVS',this.itemsList,this.group_id,'1')
+            .deleteDevelopersFromGroup('DBMAT_DG2DEVS',this.itemsList,this.group_id,'1')
             .subscribe(res => {
                 this.response = res;
                 console.log('Server response', this.response);
@@ -286,7 +286,7 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
        }
        if (dryrun == '0'){
           this.responseSub = this.deleteApi
-            .delete('DBMAT_DG2DEVS',this.itemsList,this.group_id,'0')
+            .deleteDevelopersFromGroup('DBMAT_DG2DEVS',this.itemsList,this.group_id,'0')
             .subscribe(res => {
                 this.response = res;
                 console.log('Server response', this.response);
@@ -309,7 +309,7 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
     if (groups.length != 0){
        if (dryrun == '1'){
           this.responseSub = this.deleteApi
-            .delete('DBMAT_DG2DEVS',this.itemsList,this.group_id,'1')
+            .deleteGroupsFromDeveloper('DBMAT_DG2DEVS',this.itemsList,this.developer_id,'1')
             .subscribe(res => {
                 this.response = res;
                 console.log('Server response', this.response);
@@ -319,7 +319,7 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
        }
        if (dryrun == '0'){
           this.responseSub = this.deleteApi
-            .delete('DBMAT_DG2DEVS',this.itemsList,this.group_id,'0')
+            .deleteGroupsFromDeveloper('DBMAT_DG2DEVS',this.itemsList,this.developer_id,'0')
             .subscribe(res => {
                 this.response = res;
                 console.log('Server response', this.response);
