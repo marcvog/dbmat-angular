@@ -55,4 +55,10 @@ export class GetApiService {
       .pipe(catchError(GetApiService._handleError));
   }
 
+  getAllGroupsNotInDev(developer_id: number): Observable<any[]> {
+    const headers = {'Content-Type':'application/x-www-form-urlencoded','Authorization':'Bearer ' + this.token,'Accept':'application/json'};
+    return this.http
+      .get<any[]>(`${API_URL}/allgroupsnotindev/?developer_id=${developer_id}`,{headers})
+      .pipe(catchError(GetApiService._handleError));
+  }
 }

@@ -183,9 +183,8 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
   }
 
   getAllGroupsExcept() {
-    const query = "* FROM ATLAS_DBMON.DBMAT_DEV_GROUPS WHERE DBMDG_ID NOT IN (SELECT UNIQUE DBMDG_ID FROM ATLAS_DBMON.DBMAT_DG2DEVS WHERE DBMDEV_ID = "+String(this.developer_id)+") ORDER BY DBMDG_GROUP_NAME";
     this.eligibleGroupsListSubs = this.getApi
-      .get('DBMAT_DEV_GROUPS', query)
+      .getAllGroupsNotInDev(this.developer_id)
       .subscribe(res => {
           this.eligibleGroupsList = res;
           this.eligible_group_id = this.eligibleGroupsList[0].DBMDG_ID;
