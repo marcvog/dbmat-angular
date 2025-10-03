@@ -142,7 +142,7 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
   getSelectedDevelopers () {
     this.selection_dev.clear();
     this.developersListSubs = this.getApi
-      .getDevsInGroup(this.group_id)
+      .getAllDevsInGroup(this.group_id)
       .subscribe(res => {
           this.developersList = res;
           this.dataSource_dev.data = res;
@@ -154,7 +154,7 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
   getSelectedGroups () {
     this.selection_grp.clear();
     this.devgroupsListSubs = this.getApi
-      .getGroupsInDev(this.developer_id)
+      .getAllGroupsInDev(this.developer_id)
       .subscribe(res => {
           this.devgroupsList = res;
           this.dataSource_grp.data = res;
