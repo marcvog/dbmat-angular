@@ -49,14 +49,6 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
   //dataSource_dev! : MatTableDataSource<Developer>;
   //dataSource_grp! : MatTableDataSource<DevGroup>;   
  
-  getSelDevelopers = `DEV.* FROM ATLAS_DBMON.DBMAT_DEVELOPERS DEV, ATLAS_DBMON.DBMAT_DG2DEVS DG2DEV
-                      WHERE DEV.DBMDEV_ID IN (SELECT UNIQUE DBMDEV_ID FROM ATLAS_DBMON.DBMAT_DG2DEVS)
-                      AND DEV.DBMDEV_ID = DG2DEV.DBMDEV_ID AND DG2DEV.DBMDG_ID = `;
-
-  getSelGroups = `DG.* FROM ATLAS_DBMON.DBMAT_DEV_GROUPS DG, ATLAS_DBMON.DBMAT_DG2DEVS DG2DEV
-                  WHERE DG.DBMDG_ID IN (SELECT UNIQUE DBMDG_ID FROM ATLAS_DBMON.DBMAT_DG2DEVS)
-                  AND DG.DBMDG_ID = DG2DEV.DBMDG_ID AND DG2DEV.DBMDEV_ID = `;
-
   selection_dev = new SelectionModel<Developer>(true, []);
   selection_grp = new SelectionModel<DevGroup>(true, []);
 
@@ -150,19 +142,19 @@ export class ManageGroupsComponent implements OnInit, OnDestroy {
   getSelectedDevelopers () {
     this.selection_dev.clear();
     this.developersListSubs = this.getApi
-      .get('DBMAT_DEVELOPERS', this.getSelDevelopers + this.group_id)
+      .getDevsInGroup(this.group_id)
       .subscribe(res => {
           this.developersList = res;
           this.dataSource_dev.data = res;
         },
         console.error
-      );  
+      );
   }
 
   getSelectedGroups () {
     this.selection_grp.clear();
     this.devgroupsListSubs = this.getApi
-      .get('DBMAT_DEV_GROUPS', this.getSelGroups + this.developer_id)
+      .getGroupsInDev(this.developer_id)
       .subscribe(res => {
           this.devgroupsList = res;
           this.dataSource_grp.data = res;
