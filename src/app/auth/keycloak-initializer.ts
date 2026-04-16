@@ -5,9 +5,9 @@ export function initializer(keycloak: KeycloakService): () => Promise<boolean> {
 
     const options: KeycloakOptions = {
       config: {
-        url: 'https://auth.cern.ch/auth',
-        realm: 'cern',
-        clientId: 'dbmon-account-tracking-k8s',
+        url: 'https://example.com',
+        realm: 'example-realm',
+        clientId: 'example-id',
       },
       loadUserProfileAtStartUp: false,
       initOptions: {
